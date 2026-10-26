@@ -12,7 +12,8 @@ from sim import MODULE, check, ev, run, step, setup, screenshot, tap, view3d, wi
 
 SHOTS = os.environ.get("ALLSET_GUI_SHOTS", "")
 C = {}
-D = 110  # px: past the ring (radius 80 x UI scale)
+# Drag distances were measured at effective UI scale 1.25.
+D = round(110 * bpy.context.preferences.system.ui_scale / 1.25)
 
 
 def shot(name):

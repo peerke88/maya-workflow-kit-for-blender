@@ -43,7 +43,11 @@ def s_layout():
     props = areas('PROPERTIES')
     check("one Properties area: the Maya tab stack, right of the viewport",
           len(props) == 1 and md.role(props[0]) == 'STACK' and props[0].x >= v3d.x + v3d.width)
-    check("timeline across the bottom", time.y < v3d.y and time.width >= win().width - 4)   # 5.x: 2 px edge
+    # Screen margins scale with DPI; compare against the usable content bounds.
+    left = min(a.x for a in win().screen.areas)
+    right = max(a.x + a.width for a in win().screen.areas)
+    check("timeline across the bottom",
+          time.y < v3d.y and time.x <= left + 1 and time.x + time.width >= right - 1)
     check("Outliner about 16% of the width", 0.10 < outl.width / win().width < 0.22)
     check("no viewport sidebar (the Maya panels are their own areas)", not v3d.spaces.active.show_region_ui)
     if SHOTS:
