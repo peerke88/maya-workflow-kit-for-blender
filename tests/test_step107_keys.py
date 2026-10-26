@@ -10,6 +10,7 @@ from types import SimpleNamespace
 import bpy
 
 import kit
+import maya_reference
 
 kb3 = import_module(kit.MODULE + ".operators.key_batch3")
 bookmarks = import_module(kit.MODULE + ".operators.bookmarks")
@@ -221,8 +222,9 @@ def test_other_keys():
 # --- every row classified ------------------------------------------------------------------------------------------
 
 def test_no_unreviewed_rows():
-    hot = json.loads((ROOT / "research" / "maya" / "hotkeys_default.json").read_text(encoding="utf-8"))["hotkeys"]
-    unreviewed = [(h["display"], h["context"], h["line"]) for h in hot
-                  if h["platform"] != "mac-only" and mapping.entry_for(h) is None]
+    hot = maya_reference.hotkeys(ROOT)
+    maya_reference.validate_reviews(mapping, hot)
+    unreviewed = [(h["display"], h["context"], h.get("line")) for h in hot
+                  if h["platform"] != "mac-only" and maya_reference.entry_for(mapping, h) is None]
     assert len(unreviewed) < 100, unreviewed
     assert not unreviewed, unreviewed

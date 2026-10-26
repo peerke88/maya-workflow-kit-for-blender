@@ -7,6 +7,7 @@ from pathlib import Path
 import bpy
 
 import kit
+import maya_reference
 
 ROOT = Path(__file__).resolve().parent.parent
 # Pure-data helpers from the installed extension (imported, not re-registered).
@@ -209,14 +210,12 @@ def test_added_bindings_not_shadowed():
 # --- mapping table ------------------------------------------------------------
 
 def test_mapping_rows_are_bound():
-    hk_path = ROOT / "research" / "maya" / "hotkeys_default.json"
-    hotkeys = json.loads(hk_path.read_text(encoding="utf-8"))["hotkeys"]
-    assert len(hotkeys) == 468, len(hotkeys)
+    hotkeys = maya_reference.hotkeys(ROOT)
     kd = patch.KeyconfigData(maya_patches.apply(ic_data.generate()))
     checked, bad = 0, []
     for hk in hotkeys:
         mapping.maya_event(hk)  # every Maya key converts
-        entry = mapping.entry_for(hk)
+        entry = maya_reference.entry_for(mapping, hk)
         if hk["platform"] != "mac-only" and entry and entry["check"]:
             checked += 1
             if not mapping.check_entry(kd, hk, entry):

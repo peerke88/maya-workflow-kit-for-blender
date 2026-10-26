@@ -9,6 +9,7 @@ from types import SimpleNamespace
 import bpy
 
 import kit
+import maya_reference
 
 ms = import_module(kit.MODULE + ".ui.menu_sets")
 hotkeys = import_module(kit.MODULE + ".ui.menu_hotkeys")
@@ -68,10 +69,7 @@ def texts(log):
 
 
 def test_generated_table_is_current():
-    spec = importlib.util.spec_from_file_location("gen_menu_hotkeys", ROOT / "tools" / "gen_menu_hotkeys.py")
-    gen = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(gen)
-    assert gen.table() == hotkeys.HOTKEYS, "run python tools/gen_menu_hotkeys.py"
+    maya_reference.audit_menu_table(ROOT, hotkeys.HOTKEYS)
     for path, key in (("File/New Scene", "Ctrl+N"), ("File/Open Scene...", "Ctrl+O"), ("File/Save Scene", "Ctrl+S"),
                       ("File/Save Scene As...", "Ctrl+Shift+S"), ("File/Increment and Save", "Ctrl+Alt+S"),
                       ("File/Exit", "Ctrl+Q"), ("Edit Mesh/Bevel", "Ctrl+B"), ("Edit Mesh/Extrude", "Ctrl+E"),
